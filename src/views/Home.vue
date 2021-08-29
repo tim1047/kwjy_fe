@@ -36,7 +36,7 @@ export default {
   },
   methods: {
     getMainList() {
-      axios.get("http://146.56.159.174/account_book/account_list")
+      axios.get("http://146.56.159.174/account_book/account")
       .then((res)=>{
         this.items = res.data.result_data
       })
