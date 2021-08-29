@@ -1,43 +1,7 @@
 <template>
   <div class="home">
-    <button v-on:click="getMainList">TEST</button>
-    <div class="accountTbList">
-      <colgroup>
-        <col width="10%" />
-        <col width="10%" />
-        <col width="10%" />
-        <col width="10%" />
-        <col width="10%" />
-        <col width="10%" />
-        <col width="10%" />
-        <col width="10%" />
-        <col width="10%" />
-        <col width="10%" />
-      </colgroup>
-      <tr>
-        <th>순번</th>
-        <th>날짜</th>
-        <th>구분</th>
-        <th>주체</th>
-        <th>결제수단</th>
-        <th>대분류</th>
-        <th>소분류</th>
-        <th>금액</th>
-        <th>내용</th>
-        <th>충동구매</th>
-      </tr>
-      <tr v-for="(row, idx) in list" v-bind:key="idx">
-        <td>{{row.account_id}}</td>
-        <td>{{row.account_dt}}</td>
-        <td>{{row.division_nm}}</td>
-        <td>{{row.member_nm}}</td>
-        <td>{{row.payment_nm}}</td>
-        <td>{{row.category_nm}}</td>
-        <td>{{row.category_seq_nm}}</td>
-        <td>{{row.price}}</td>
-        <td>{{row.remark}}</td>
-        <td>{{row.impulse_yn}}</td>
-      </tr>
+    <div>
+      <b-table responsive :fields="fields" :items="items"></b-table>
     </div>
   </div>
 </template>
@@ -52,19 +16,34 @@ export default {
   },
   data() {
       return {
-        list: []
+        fields: [
+          { key: 'account_id', label: '순번'},
+          { key: 'account_dt', label: '날짜'},
+          { key: 'division_nm', label: '구분'},
+          { key: 'member_nm', label: '주체'},
+          { key: 'payment_nm', label: '결제수단'},
+          { key: 'category_nm', label: '대분류'},
+          { key: 'category_seq_nm', label: '소분류'},
+          { key: 'price', label: '가격'},
+          { key: 'remark', label: '내용'},
+          { key: 'impulse_yn', label: '충동지출'},
+        ],
+        items: []
       }
   },
   methods: {
     getMainList() {
       axios.get("http://146.56.159.174/account_book/account_list")
       .then((res)=>{
-        this.list = res.data.result_data
+        this.items = res.data.result_data
       })
       .then((err)=>{
         console.log(err)
       })
     }
+  },
+  created() {
+    this.getMainList()
   }
 };
 </script>
