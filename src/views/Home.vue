@@ -1,5 +1,8 @@
 <template>
   <div class="home">
+    <div id="table">
+      <bootstrap-table :columns="columns" :data="data" :options="options"></bootstrap-table>
+    </div>
     <div>
       <b-table responsive :fields="fields" :items="items"></b-table>
     </div>
