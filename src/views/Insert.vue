@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="max-width: 20rem; margin: auto; margin-top: 10vh;">
     <b-form @submit="onSubmit" @reset="onReset" v-if="show">
       <b-form-group
         id="input-accountDt"
@@ -21,6 +21,7 @@
           :options="divisionItems"
           @change="getCategoryList"
           required
+          style="width:100%;"
         ></b-form-select>
       </b-form-group>
 
@@ -31,6 +32,7 @@
           :options="memberItems"
           required
           @change="getPaymentList"
+          style="width:100%;"
         ></b-form-select>
       </b-form-group>
 
@@ -40,6 +42,7 @@
           v-model="form.paymentId"
           :options="paymentItems"
           required
+          style="width:100%;"
         ></b-form-select>
       </b-form-group>
 
@@ -50,6 +53,7 @@
           :options="categoryItems"
           required
           @change="getCategorySeqList"
+          style="width:100%;"
         ></b-form-select>
       </b-form-group>
 
@@ -58,6 +62,7 @@
           id="categorySeq"
           v-model="form.categorySeq"
           :options="categorySeqItems"
+          style="width:100%;"
         ></b-form-select>
       </b-form-group>
 
@@ -83,11 +88,12 @@
           v-model="form.impulseYn"
           :options="impulse"
           required
+          style="width:100%;"
         ></b-form-select>
       </b-form-group>
 
-      <div>
-        <b-button type="submit" variant="primary">등록</b-button>
+      <div style="margin-top:10px;">
+        <b-button type="submit" variant="primary" style="margin-right:5px;">등록</b-button>
         <b-button type="reset" variant="danger">초기화</b-button>
       </div>
     </b-form>
@@ -104,7 +110,8 @@ import axios from 'axios';
           divisionId: null,
           memberId: null,
           paymentId: null,
-          categoryId: null
+          categoryId: null,
+          remark: ''
         },
         divisionItems: [],
         memberItems: [],
