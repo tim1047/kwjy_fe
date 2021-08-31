@@ -1,11 +1,17 @@
 <template>
-  <div class="home">
-    <div id="table">
-      <bootstrap-table :columns="columns" :data="data" :options="options"></bootstrap-table>
-    </div>
-    <div>
-      <b-table responsive :fields="fields" :items="items"></b-table>
-    </div>
+  <div class="home" style="max-width: 120rem; margin: auto;">
+    <b-container fluid>
+      <b-table responsive bordered fixed small :fields="fields" :items="items">
+        <template #cell(actions)="data">
+         <b-button size="sm" @click="update(data)" class="mr-1">
+            수정
+          </b-button>
+          <b-button size="sm" @click="update(data)">
+            삭제
+          </b-button>
+        </template>
+      </b-table>
+    </b-container>
   </div>
 </template>
 
@@ -30,19 +36,23 @@ export default {
           { key: 'price', label: '가격'},
           { key: 'remark', label: '내용'},
           { key: 'impulse_yn', label: '충동지출'},
+          { key: 'actions', label: '수정/삭제'}
         ],
         items: []
-      }
+       }
   },
   methods: {
     getMainList() {
-      axios.get("http://146.56.159.174/account_book/account")
+      axios.get("http://146.56.159.174/account_book" + "/account")
       .then((res)=>{
         this.items = res.data.result_data
       })
       .then((err)=>{
         console.log(err)
       })
+    },
+    update(data) {
+      console.log(data.item)
     }
   },
   created() {
