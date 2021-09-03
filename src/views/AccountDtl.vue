@@ -1,21 +1,27 @@
 <template>
-  <div>
-    <AccountList />
-    <Insert />
+  <div class="home" style="max-width: 120rem; margin: auto;">
+    <b-container fluid>
+      <b-table responsive bordered fixed small :fields="fields" :items="items">
+        <template #cell(actions)="data">
+         <b-button size="sm" @click="update(data)" class="mr-1">
+            수정
+          </b-button>
+          <b-button size="sm" @click="update(data)">
+            삭제
+          </b-button>
+        </template>
+      </b-table>
+    </b-container>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import axios from 'axios';
-import AccountList from "@/components/AccountList.vue";
-import Insert from "@/components/Insert.vue";
 
 export default {
-  name: "Home",
+  name: "AccountDtl",
   components: {
-    AccountList,
-    Insert
   },
   data() {
       return {
@@ -36,8 +42,8 @@ export default {
        }
   },
   methods: {
-    getMainList() {
-      axios.get("http://146.56.159.174/account_book" + "/account")
+    getCategorySum() {
+      axios.get("http://146.56.159.174/account_book" + "/category_sum")
       .then((res)=>{
         this.items = res.data.result_data
       })
@@ -50,7 +56,7 @@ export default {
     }
   },
   created() {
-    this.getMainList()
+    this.getCategorySum()
   }
 };
 </script>

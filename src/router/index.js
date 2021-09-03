@@ -1,7 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
-import Insert from "../views/Insert.vue";
 
 Vue.use(VueRouter);
 
@@ -10,12 +9,7 @@ const routes = [
     path: "/",
     name: "Home",
     component: Home,
-  },
-  {
-    path: "/insert",
-    name: "Insert",
-    component: Insert,
-  },
+  }
 ];
 
 const router = new VueRouter({

@@ -1,5 +1,5 @@
 <template>
-  <div style="max-width: 20rem; margin: auto; margin-top: 10vh;">
+  <div style="width:20vw; margin:4vw; float:left;">
     <b-form @submit="onSubmit" @reset="onReset" v-if="show">
       <b-form-group
         id="input-accountDt"

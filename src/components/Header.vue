@@ -1,13 +1,13 @@
 <template>
   <div>
     <b-navbar toggleable="lg" type="dark" variant="info">
-      <b-navbar-brand href="/">정윤 * 강원 가계부</b-navbar-brand>
+      <b-nav-item><b-link to="/">정윤 * 강원 가계부</b-link></b-nav-item>
 
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
-          <b-nav-item href="/insert">가계부 등록</b-nav-item>
+          <b-nav-item><b-link to="insert">가계부 통계</b-link></b-nav-item>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
