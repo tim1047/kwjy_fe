@@ -102,6 +102,7 @@
 
 <script>
 import axios from 'axios';
+import EventBus from '@/lib/EventBus.js'
 
   export default {
     data() {
@@ -120,13 +121,15 @@ import axios from 'axios';
         categorySeqItems: [],
         impulse: ['N', 'Y'],
         show: true,
-        serverSideUrl: 'http://146.56.159.174/account_book',
+        serverSideUrl: 'http://146.56.159.174:8000/account_book',
         param: {}
       }
     },
     methods: {
       onSubmit(event) {
         event.preventDefault()
+
+        // parameter set
         this.param = {
           'account_dt': this.form.accountDt.replaceAll('-', ''),
           'division_id': this.form.divisionId,
@@ -138,26 +141,35 @@ import axios from 'axios';
           'remark': this.form.remark,
           'impulse_yn': this.form.impulseYn,
         }
+        // parameter validate
+
+        // insert account
         this.insertAccount(this.param)
       },
       onReset(event) {
         event.preventDefault()
-        // Reset our form values
-        this.form.email = ''
-        this.form.name = ''
-        this.form.food = null
-        this.form.checked = []
-        // Trick to reset/clear native browser form validation state
-        this.show = false
-        this.$nextTick(() => {
-          this.show = true
-        })
+        // reset form data
+        this.clearFormData()
+      },
+      clearFormData() {
+        this.accountDt = null
+        this.form.divisionId = null
+        this.form.memberId = null
+        this.form.paymentId = null
+        this.form.categoryId = null
+        this.form.categorySeq = null
+        this.form.remark = ''
+        this.form.price = ''
+        this.form.impulseYn = null
       },
       getDivisionList() {
+        // axios call
         axios.get(this.serverSideUrl + "/division_list")
         .then((res)=>{
           if(res.data.result_message == "SUCCESS"){
             this.divisionItems = []
+            
+            // set division select box 
             res.data.result_data.forEach(item => 
               this.divisionItems.push({
                 text: item.division_nm,
@@ -171,10 +183,13 @@ import axios from 'axios';
         })
       },
       getMemberList() {
+        // axios call
         axios.get(this.serverSideUrl + "/member_list")
         .then((res)=>{
           if(res.data.result_message == "SUCCESS"){
             this.memberItems = []
+
+            // set member select box
             res.data.result_data.forEach(item => 
               this.memberItems.push({
                 text: item.member_nm,
@@ -188,10 +203,13 @@ import axios from 'axios';
         })
       },
       getPaymentList() {
+        // axios call
         axios.get(this.serverSideUrl + "/payment_list/" + this.form.memberId)
         .then((res)=>{
           if(res.data.result_message == "SUCCESS"){
             this.paymentItems = []
+
+            // set payment select box
             res.data.result_data.forEach(item => 
               this.paymentItems.push({
                 text: item.payment_nm,
@@ -205,10 +223,13 @@ import axios from 'axios';
         })
       },
       getCategoryList() {
+        // axios
         axios.get(this.serverSideUrl + "/category_list/" + this.form.divisionId)
         .then((res)=>{
           if(res.data.result_message == "SUCCESS"){
             this.categoryItems = []
+
+            // set category select box
             res.data.result_data.forEach(item => 
               this.categoryItems.push({
                 text: item.category_nm,
@@ -222,10 +243,13 @@ import axios from 'axios';
         })
       },
       getCategorySeqList() {
+        // axios call
         axios.get(this.serverSideUrl + "/category_seq_list/" + this.form.categoryId)
         .then((res)=>{
           if(res.data.result_message == "SUCCESS"){
             this.categorySeqItems = []
+
+            // set category seq select box
             res.data.result_data.forEach(item => 
               this.categorySeqItems.push({
                 text: item.category_seq_nm,
@@ -239,16 +263,25 @@ import axios from 'axios';
         })
       },
       insertAccount(param) {
+        // axios call
         axios.post(this.serverSideUrl + "/account", param)
         .then((res)=>{
           if(res.data.result_message == "SUCCESS"){
-            alert('success!!')
+            alert('저장 완료!!')
+
+            // eventbus emit to AccountList.vue
+            EventBus.$emit('insert')
+
+            // form data reset
+            this.clearFormData()
           }
         })
       }
     },
     created() {
+      // get division list
       this.getDivisionList()
+      // get account memeber list
       this.getMemberList()
     }
   }

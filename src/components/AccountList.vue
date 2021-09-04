@@ -1,5 +1,9 @@
 <template>
   <div class="home" style="width:70vw; float:left;">
+    <b-jumbotron :header="jumboHeader" lead="원하는 월을 선택하여 조회해주세요.">
+      <b-form-select v-model="curMonth" :options="monthList"></b-form-select>
+      <b-button variant="primary">조회</b-button>
+    </b-jumbotron>
     <b-container fluid>
       <b-table responsive bordered fixed small :fields="fields" :items="items">
         <template #cell(actions)="data">
@@ -18,6 +22,7 @@
 <script>
 // @ is an alias to /src
 import axios from 'axios';
+import EventBus from '@/lib/EventBus.js'
 
 export default {
   name: "accountList",
@@ -38,13 +43,18 @@ export default {
           { key: 'impulse_yn', label: '충동지출'},
           { key: 'actions', label: '수정/삭제'}
         ],
-        items: []
+        items: [],
+        curMonth: null,
+        monthList: [],
+        jumboHeader: ''
        }
   },
   methods: {
     getMainList() {
+      // axios call
       axios.get("http://146.56.159.174:8000/account_book" + "/account")
       .then((res)=>{
+        // set account list
         this.items = res.data.result_data
       })
       .then((err)=>{
@@ -53,10 +63,31 @@ export default {
     },
     update(data) {
       console.log(data.item)
+    },
+    setAccountDtList() {
+      for(let i=1;i<=12;i++){
+        this.monthList.push(
+          {
+            text: i+"월",
+            value: i 
+          }
+        )
+      }
     }
   },
   created() {
+    // init account list
     this.getMainList()
+
+    // set jumboHeader text
+    this.curMonth = new Date().getMonth() + 1
+    this.jumboHeader = this.curMonth + "월 가계부"
+    // set month list
+    this.setAccountDtList()
+
+    // receive event bus from Insert.vue
+    // refresh account list
+    EventBus.$on('insert', this.getMainList)
   }
 };
 </script>
