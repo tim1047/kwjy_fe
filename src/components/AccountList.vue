@@ -1,8 +1,8 @@
 <template>
   <div class="home" style="width:70vw; float:left;">
     <b-jumbotron :header="jumboHeader" lead="원하는 월을 선택하여 조회해주세요.">
-      <b-form-select v-model="curMonth" :options="monthList"></b-form-select>
-      <b-button variant="primary">조회</b-button>
+      <b-form-select v-model="date.curMonth" :options="monthList"></b-form-select>
+      <b-button variant="primary" @click="getMainList">조회</b-button>
     </b-jumbotron>
     <b-container fluid>
       <b-table responsive bordered fixed small :fields="fields" :items="items">
@@ -45,7 +45,13 @@ export default {
           { key: 'account_id', thClass: 'd-none', tdClass: 'd-none' }
         ],
         items: [],
-        curMonth: null,
+        date: {
+          curDate: null,
+          curYear: null,
+          curMonth: null
+        },
+        strtDt: '',
+        endDt: '',
         monthList: [],
         jumboHeader: '',
         param: {}
@@ -53,8 +59,11 @@ export default {
   },
   methods: {
     getMainList() {
+      this.strtDt = this.date.curYear + ('0' + this.date.curMonth).slice(-2) + '01'
+      this.endDt = this.date.curYear + ('0' + this.date.curMonth).slice(-2) + new Date(this.date.curYear, this.date.curMonth, 0).getDate()
+
       // axios call
-      axios.get("http://146.56.159.174:8000/account_book" + "/account")
+      axios.get("http://146.56.159.174:8000/account_book" + "/account?strtDt=" + this.strtDt + "&endDt=" + this.endDt)
       .then((res)=>{
         // set account list
         this.items = res.data.result_data
@@ -105,14 +114,17 @@ export default {
     }
   },
   created() {
-    // init account list
-    this.getMainList()
-
     // set jumboHeader text
-    this.curMonth = new Date().getMonth() + 1
-    this.jumboHeader = this.curMonth + "월 가계부"
+    this.date.curDate = new Date()
+    this.date.curYear = this.date.curDate.getFullYear()
+    this.date.curMonth = this.date.curDate.getMonth() + 1
+    this.jumboHeader = this.date.curMonth + "월 가계부"
+
     // set month list
     this.setAccountDtList()
+
+    // init account list
+    this.getMainList()
 
     // receive event bus from Insert.vue
     // refresh account list
