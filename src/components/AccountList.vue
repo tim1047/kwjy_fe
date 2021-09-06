@@ -7,10 +7,10 @@
     <b-container fluid>
       <b-table responsive bordered fixed small :fields="fields" :items="items">
         <template #cell(actions)="data">
-         <b-button size="sm" @click="update(data)" class="mr-1">
+         <b-button size="sm" @click="updateAccount(data)" type="submit" variant="primary" style="margin-right:5px;">
             수정
           </b-button>
-          <b-button size="sm" @click="update(data)">
+          <b-button size="sm" @click="deleteAccount(data)" type="submit" variant="danger">
             삭제
           </b-button>
         </template>
@@ -31,7 +31,7 @@ export default {
   data() {
       return {
         fields: [
-          { key: 'account_id', label: '순번'},
+          { key: 'seq', label: '순번'},
           { key: 'account_dt', label: '날짜'},
           { key: 'division_nm', label: '구분'},
           { key: 'member_nm', label: '주체'},
@@ -41,12 +41,14 @@ export default {
           { key: 'price', label: '가격'},
           { key: 'remark', label: '내용'},
           { key: 'impulse_yn', label: '충동지출'},
-          { key: 'actions', label: '수정/삭제'}
+          { key: 'actions', label: '수정/삭제'},
+          { key: 'account_id', thClass: 'd-none', tdClass: 'd-none' }
         ],
         items: [],
         curMonth: null,
         monthList: [],
-        jumboHeader: ''
+        jumboHeader: '',
+        param: {}
        }
   },
   methods: {
@@ -61,10 +63,37 @@ export default {
         console.log(err)
       })
     },
-    update(data) {
+    updateAccount(data) {
       console.log(data.item)
+      // set parameter
+
+    },
+    deleteAccount(data) {
+      if(!confirm('데이터를 삭제하시겠습니까?')){
+        return
+      }
+      // set parameter
+      this.param = {
+        'account_id': data.item.account_id
+      }
+      // axios call
+      axios.delete("http://146.56.159.174:8000/account_book" + "/account", {
+        data: this.param
+      })
+      .then((res)=>{
+        if(res.data.result_message == "SUCCESS"){
+          alert("삭제 완료!!")
+          
+          // refresh account list
+          this.getMainList()
+        }
+      })
+      .then((err)=>{
+        console.log(err)
+      })
     },
     setAccountDtList() {
+      // set month list
       for(let i=1;i<=12;i++){
         this.monthList.push(
           {
