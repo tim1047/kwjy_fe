@@ -4,6 +4,37 @@
       <b-form-select v-model="date.curMonth" :options="monthList"></b-form-select>
       <b-button variant="primary" @click="getMainList">조회</b-button>
     </b-jumbotron>
+
+    <div style="width:45vw;">
+        <b-table-simple hover small caption-top responsive>
+            <caption>월 마감:</caption>
+            <colgroup><col></colgroup>
+            <colgroup><col></colgroup>
+            <b-tbody>
+              <b-tr>
+                <b-th>수입</b-th>
+                <b-td>{{divisionSum['income'] | comma}}</b-td>
+              </b-tr>
+              <b-tr>
+                <b-th>지출</b-th>
+                <b-td>{{divisionSum['expense'] | comma}}</b-td>
+              </b-tr>
+              <b-tr>
+                <b-th>순수익(수입-지출)</b-th>
+                <b-td>{{divisionSum['interest'] | comma}}</b-td>
+              </b-tr>
+              <b-tr>
+                <b-th>투자</b-th>
+                <b-td>{{divisionSum['invest'] | comma}}</b-td>
+              </b-tr>
+              <b-tr>
+                <b-th>투자율</b-th>
+                <b-td>{{divisionSum['invest_rate'] | comma}}</b-td>
+              </b-tr>
+            </b-tbody>
+        </b-table-simple>
+    </div>
+
     <b-container fluid>
       <b-table responsive bordered fixed small :fields="fields" :items="items">
         <template #cell(actions)="data">
@@ -54,11 +85,16 @@ export default {
         endDt: '',
         monthList: [],
         jumboHeader: '',
-        param: {}
+        param: {},
+        divisionSum: {}
        }
   },
   methods: {
     getMainList() {
+      this.getAccountList()
+      this.getDivisionSum()
+    },
+    getAccountList() {
       this.strtDt = this.date.curYear + ('0' + this.date.curMonth).slice(-2) + '01'
       this.endDt = this.date.curYear + ('0' + this.date.curMonth).slice(-2) + new Date(this.date.curYear, this.date.curMonth, 0).getDate()
 
@@ -111,6 +147,15 @@ export default {
           }
         )
       }
+    },
+    getDivisionSum() {
+        // axios call
+      axios.get("http://146.56.159.174:8000/account_book" + "/division_sum?strtDt=" + this.strtDt + "&endDt=" + this.endDt)
+      .then((res)=>{
+        if(res.data.result_message == "SUCCESS"){
+          this.divisionSum = res.data.result_data
+        }
+      })
     }
   },
   created() {
