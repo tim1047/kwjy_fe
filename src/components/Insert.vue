@@ -136,7 +136,7 @@ import EventBus from '@/lib/EventBus.js'
           'member_id': this.form.memberId,
           'payment_id': this.form.paymentId,
           'category_id': this.form.categoryId,
-          'category_seq': this.form.categorySeq,
+          'category_seq': this.form.categorySeq == null ? '' : this.form.categorySeq,
           'price': this.form.price,
           'remark': this.form.remark,
           'impulse_yn': this.form.impulseYn,

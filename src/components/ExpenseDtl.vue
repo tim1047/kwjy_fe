@@ -18,13 +18,13 @@
             </b-tr>
             <b-tr>
                 <b-th colspan="2">지출전체총합</b-th>
-                <b-th>{{expenseItems[0].total_sum_price}}</b-th>
-                <b-th>0</b-th>
-                <b-th>0</b-th>
-                <b-th>0</b-th>
-                <b-th>0</b-th>
-                <b-th>0</b-th>
-                <b-th>0</b-th>
+                <b-th>{{expenseItems[0].total_sum_price | comma}}</b-th>
+                <b-th>{{expenseItems[0].total_first_week_sum_price | comma}}</b-th>
+                <b-th>{{expenseItems[0].total_second_week_sum_price | comma}}</b-th>
+                <b-th>{{expenseItems[0].total_third_week_sum_price | comma}}</b-th>
+                <b-th>{{expenseItems[0].total_fourth_week_sum_price | comma}}</b-th>
+                <b-th>{{expenseItems[0].total_fifth_week_sum_price | comma}}</b-th>
+                <b-th>{{expenseItems[0].total_sixth_week_sum_price | comma}}</b-th>
             </b-tr>
             <b-tr>
                 <b-th colspan="2">고정비용합</b-th>
@@ -41,12 +41,13 @@
             <b-tr v-for="(item) in expenseItems" v-bind:key="item">
                 <b-th>{{item.category_nm}}</b-th>
                 <b-th>{{item.category_seq_nm}}</b-th>
-                <b-td>{{item.sum_price}}</b-td>
-                <b-td>0</b-td>
-                <b-td>0</b-td>
-                <b-td>0</b-td>
-                <b-td variant="success">0</b-td>
-                <b-td>0</b-td>
+                <b-td>{{item.sum_price | comma}}</b-td>
+                <b-td>{{item.first_week_sum_price | comma}}</b-td>
+                <b-td>{{item.second_week_sum_price | comma}}</b-td>
+                <b-td>{{item.third_week_sum_price | comma}}</b-td>
+                <b-td variant="success">{{item.fourth_week_sum_price | comma}}</b-td>
+                <b-td>{{item.fifth_week_sum_price | comma}}</b-td>
+                <b-td>{{item.sixth_week_sum_price | comma}}</b-td>
             </b-tr>
             </b-tbody>
         </b-table-simple>
