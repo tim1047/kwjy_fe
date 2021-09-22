@@ -1,5 +1,5 @@
 <template>
-    <div style="width:45vw; float:left;">
+    <div style="width:45vw; float:left; margin:2vw">
         <b-table-simple small bordered caption-top responsive>
             <caption>수입:</caption>
             <colgroup><col><col><col></colgroup>
