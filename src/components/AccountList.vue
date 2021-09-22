@@ -5,31 +5,41 @@
       <b-button variant="primary" @click="getMainList">조회</b-button>
     </b-jumbotron>
 
-    <div style="width:45vw;">
-        <b-table-simple hover small caption-top responsive>
-            <caption>월 마감:</caption>
+    <div style="width:30vw;">
+        <b-table-simple bordered small caption-top responsive>
+            <colgroup><col></colgroup>
             <colgroup><col></colgroup>
             <colgroup><col></colgroup>
             <b-tbody>
               <b-tr>
-                <b-th>수입</b-th>
-                <b-td>{{divisionSum['income'] | comma}}</b-td>
+                <b-th variant="secondary">월 마감</b-th>
+                <b-td variant="secondary">당월</b-td>
+                <b-td variant="secondary">전월 대비</b-td>
               </b-tr>
               <b-tr>
-                <b-th>지출</b-th>
-                <b-td>{{divisionSum['expense'] | comma}}</b-td>
+                <b-th variant="secondary">수입</b-th>
+                <b-td variant="secondary">{{divisionSum['income'] | comma}}</b-td>
+                <b-td>{{divisionSum['income'] - prevDivisionSum['income'] | comma}}</b-td>
               </b-tr>
               <b-tr>
-                <b-th>순수익(수입-지출)</b-th>
-                <b-td>{{divisionSum['interest'] | comma}}</b-td>
+                <b-th variant="secondary">지출</b-th>
+                <b-td variant="secondary">{{divisionSum['expense'] | comma}}</b-td>
+                <b-td>{{divisionSum['expense'] - prevDivisionSum['expense'] | comma}}</b-td>
               </b-tr>
               <b-tr>
-                <b-th>투자</b-th>
-                <b-td>{{divisionSum['invest'] | comma}}</b-td>
+                <b-th variant="secondary">순수익(수입-지출)</b-th>
+                <b-td variant="secondary">{{divisionSum['interest'] | comma}}</b-td>
+                <b-td>{{divisionSum['interest'] - prevDivisionSum['interest'] | comma}}</b-td>
               </b-tr>
               <b-tr>
-                <b-th>투자율</b-th>
-                <b-td>{{divisionSum['invest_rate'] | comma}}</b-td>
+                <b-th variant="secondary">투자</b-th>
+                <b-td variant="secondary">{{divisionSum['invest'] | comma}}</b-td>
+                <b-td>{{divisionSum['invest'] - prevDivisionSum['invest'] | comma}}</b-td>
+              </b-tr>
+              <b-tr>
+                <b-th variant="secondary">투자율</b-th>
+                <b-td variant="secondary">{{divisionSum['invest_rate'] | comma}}</b-td>
+                <b-td>{{divisionSum['invest_rate'] - prevDivisionSum['invest_rate'] | comma}}</b-td>
               </b-tr>
             </b-tbody>
         </b-table-simple>
@@ -79,14 +89,16 @@ export default {
         date: {
           curDate: null,
           curYear: null,
-          curMonth: null
+          curMonth: null,
+          prevMonth: null
         },
         strtDt: '',
         endDt: '',
         monthList: [],
         jumboHeader: '',
         param: {},
-        divisionSum: {}
+        divisionSum: {},
+        prevDivisionSum: {}
        }
   },
   methods: {
@@ -150,6 +162,12 @@ export default {
     },
     getDivisionSum() {
         // axios call
+      axios.get("http://146.56.159.174:8000/account_book" + "/division_sum?strtDt=" + this.date.curYear + ('0' + this.date.curDate.getMonth()).slice(-2) + '01' + "&endDt=" + this.date.curYear + ('0' + this.date.curDate.getMonth()).slice(-2) + new Date(this.date.curYear, this.date.curDate.getMonth(), 0).getDate())
+      .then((res)=>{
+        if(res.data.result_message == "SUCCESS"){
+          this.prevDivisionSum = res.data.result_data
+        }
+      })
       axios.get("http://146.56.159.174:8000/account_book" + "/division_sum?strtDt=" + this.strtDt + "&endDt=" + this.endDt)
       .then((res)=>{
         if(res.data.result_message == "SUCCESS"){
