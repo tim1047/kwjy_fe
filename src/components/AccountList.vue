@@ -36,7 +36,7 @@
     </div>
 
     <b-container fluid>
-      <b-table responsive bordered fixed small :fields="fields" :items="items">
+      <b-table sticky-header responsive bordered fixed small :fields="fields" :items="items">
         <template #cell(actions)="data">
          <b-button size="sm" @click="updateAccount(data)" type="submit" variant="primary" style="margin-right:5px;">
             수정
