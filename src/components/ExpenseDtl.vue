@@ -27,14 +27,11 @@
                 <b-th variant="secondary">{{expenseItems[0].total_sixth_week_sum_price | comma}}</b-th>
             </b-tr>
             <b-tr>
-                <b-th colspan="2" variant="secondary">고정비용합</b-th>
-                <b-th variant="secondary">0</b-th>
-                <b-th variant="secondary">0</b-th>
-                <b-th variant="secondary">0</b-th>
-                <b-th variant="secondary">0</b-th>
-                <b-th variant="secondary">0</b-th>
-                <b-th variant="secondary">0</b-th>
-                <b-th variant="secondary">0</b-th>
+                <b-th colspan="2" variant="warning">고정비용합</b-th>
+                <b-th variant="warning">{{fixedPriceItems.reduce((a, c) => a + parseInt(c.sum_price), 0) | comma}}</b-th>
+                <b-th variant="warning" v-for="(item) in fixedPriceItems" v-bind:key="item">
+                  {{item.sum_price | comma}}
+                </b-th>
             </b-tr>
             </b-thead>
             <b-tbody>
@@ -65,6 +62,7 @@ export default {
   data() {
       return {
         expenseItems: [],
+        fixedPriceItems: [],
         serverSideUrl: 'http://146.56.159.174:8000/account_book'
       }
   },
@@ -78,10 +76,21 @@ export default {
       .then((err)=>{
         console.log(err)
       })
+    },
+    getFixedPriceSum() {
+      axios.get(this.serverSideUrl + "/fixed_price_sum?strtDt=20210901&endDt=20210931" )
+      .then((res)=>{
+        // set fixed price list
+        this.fixedPriceItems = res.data.result_data
+      })
+      .then((err)=>{
+        console.log(err)
+      })
     }
   },
   created() {
     this.getCategorySeqSum()
+    this.getFixedPriceSum()
   }
 };
 </script>
