@@ -1,9 +1,9 @@
 <template>
   <div>
-    <income></income>
-    <invest></invest>
-    <expense></expense>
-    <expense-dtl></expense-dtl>
+    <Income></Income>
+    <Invest></Invest>
+    <Expense></Expense>
+    <ExpenseDtl></ExpenseDtl>
   </div>
 </template>
 
