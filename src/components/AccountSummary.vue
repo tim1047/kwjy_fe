@@ -131,7 +131,7 @@ export default {
       return this.date.curYear + ('0' + this.date.prevMonth).slice(-2) + '01'
     },
     prevEndDt() {
-      return this.date.curYear + ('0' + this.date.curDate.getMonth()).slice(-2) + new Date(this.date.curYear, this.date.curDate.getMonth(), 0).getDate()
+      return this.date.curYear + ('0' + this.date.prevMonth).slice(-2) + new Date(this.date.curYear, this.date.prevMonth, 0).getDate()
     },
     serverSideUrl() {
       return this.$store.state.apiUrl
