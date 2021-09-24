@@ -60,6 +60,9 @@ export default {
       axios.get(this.serverSideUrl + "/category_sum/3?strtDt=" + this.strtDt + '&endDt=' + this.endDt)
       .then((res)=>{
         // set chart data
+        this.chartLabelData = []
+        this.chartData = []
+        
         for(var key in res.data.result_data){
           this.chartLabelData.push(res.data.result_data[key]['category_nm'])
           this.chartData.push(((res.data.result_data[key]['sum_price'] / res.data.result_data[key]['total_sum_price']) * 100).toFixed(2))
