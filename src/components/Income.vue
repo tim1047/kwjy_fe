@@ -18,7 +18,7 @@
             </b-tr>
             <b-tr>
                 <b-th variant="secondary">총합</b-th>
-                <b-th variant="secondary">0</b-th>
+                <b-th variant="secondary">{{incomeItems.reduce((a, c) => a + parseInt(c.plan_price), 0) | comma}}</b-th>
                 <b-th variant="secondary">{{incomeItems[0].total_sum_price | comma}}</b-th>
                 <b-th variant="secondary">{{incomeItems[0].total_first_week_sum_price | comma}}</b-th>
                 <b-th variant="secondary">{{incomeItems[0].total_second_week_sum_price | comma}}</b-th>
@@ -31,7 +31,7 @@
             <b-tbody>
             <b-tr v-for="(item) in incomeItems" v-bind:key="item">
                 <b-th variant="secondary">{{item.category_nm}}</b-th>
-                <b-th variant="secondary">0</b-th>
+                <b-th variant="secondary">{{item.plan_price | comma}}</b-th>
                 <b-td variant="secondary">{{item.sum_price | comma}}</b-td>
                 <b-td>{{item.first_week_sum_price | comma}}</b-td>
                 <b-td>{{item.second_week_sum_price | comma}}</b-td>
