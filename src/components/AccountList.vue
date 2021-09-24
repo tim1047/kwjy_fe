@@ -1,62 +1,39 @@
 <template>
-  <div class="home" style="width:70vw; float:left;">
+  <div class="home">
     <b-jumbotron :header="jumboHeader" lead="원하는 월을 선택하여 조회해주세요.">
       <b-form-select v-model="date.curMonth" :options="monthList"></b-form-select>
       <b-button variant="primary" @click="getMainList">조회</b-button>
     </b-jumbotron>
 
-    <div style="width:30vw;">
-        <b-table-simple bordered small caption-top responsive>
-            <colgroup><col></colgroup>
-            <colgroup><col></colgroup>
-            <colgroup><col></colgroup>
-            <b-tbody>
-              <b-tr>
-                <b-th variant="secondary">월 마감</b-th>
-                <b-td variant="secondary">당월</b-td>
-                <b-td variant="secondary">전월 대비</b-td>
-              </b-tr>
-              <b-tr>
-                <b-th variant="secondary">수입</b-th>
-                <b-td variant="secondary">{{divisionSum['income'] | comma}}</b-td>
-                <b-td>{{divisionSum['income'] - prevDivisionSum['income'] | comma}}</b-td>
-              </b-tr>
-              <b-tr>
-                <b-th variant="secondary">지출</b-th>
-                <b-td variant="secondary">{{divisionSum['expense'] | comma}}</b-td>
-                <b-td>{{divisionSum['expense'] - prevDivisionSum['expense'] | comma}}</b-td>
-              </b-tr>
-              <b-tr>
-                <b-th variant="secondary">순수익(수입-지출)</b-th>
-                <b-td variant="secondary">{{divisionSum['interest'] | comma}}</b-td>
-                <b-td>{{divisionSum['interest'] - prevDivisionSum['interest'] | comma}}</b-td>
-              </b-tr>
-              <b-tr>
-                <b-th variant="secondary">투자</b-th>
-                <b-td variant="secondary">{{divisionSum['invest'] | comma}}</b-td>
-                <b-td>{{divisionSum['invest'] - prevDivisionSum['invest'] | comma}}</b-td>
-              </b-tr>
-              <b-tr>
-                <b-th variant="secondary">투자율</b-th>
-                <b-td variant="secondary">{{divisionSum['invest_rate'] | comma}}</b-td>
-                <b-td>{{divisionSum['invest_rate'] - prevDivisionSum['invest_rate'] | comma}}</b-td>
-              </b-tr>
-            </b-tbody>
-        </b-table-simple>
+    <AccountSummary v-bind:searchDate="date"></AccountSummary>
+    <div style="width:40vw; float:left;">
+      <CategorySeqChart></CategorySeqChart>
     </div>
 
-    <b-container fluid>
-      <b-table sticky-header responsive bordered fixed small :fields="fields" :items="items">
-        <template #cell(actions)="data">
-         <b-button size="sm" @click="updateAccount(data)" type="submit" variant="primary" style="margin-right:5px;">
-            수정
-          </b-button>
-          <b-button size="sm" @click="deleteAccount(data)" type="submit" variant="danger">
-            삭제
-          </b-button>
-        </template>
-      </b-table>
-    </b-container>
+    <div style="float:left;">
+      <b-button v-b-modal="'insert-modal'" variant="primary" style="margin:0.5vw;">등록</b-button>
+      <b-container fluid>
+        <b-table responsive bordered fixed small :fields="fields" :items="items">
+          <template #cell(actions)="data">
+          <b-button size="sm" v-b-modal="'update-modal'" @click="updateAccount(data)" variant="primary" style="margin-right:5px;">
+              수정
+            </b-button>
+            <b-button size="sm" @click="deleteAccount(data)" type="submit" variant="danger">
+              삭제
+            </b-button>
+          </template>
+        </b-table>
+      </b-container>
+      <b-button v-b-modal="'insert-modal'" variant="primary" style="margin:0.5vw;">등록</b-button>
+    </div>
+
+    <b-modal id="insert-modal" ok-only>
+      <Insert></Insert>
+    </b-modal>
+
+    <b-modal id="update-modal" ok-only>
+      <Insert v-bind:selectedForm="selectedForm"></Insert>
+    </b-modal>
   </div>
 </template>
 
@@ -64,10 +41,16 @@
 // @ is an alias to /src
 import axios from 'axios';
 import EventBus from '@/lib/EventBus.js'
+import AccountSummary from "@/components/AccountSummary.vue";
+import Insert from "@/components/Insert.vue";
+import CategorySeqChart from "@/components/CategorySeqChart.vue";
 
 export default {
   name: "accountList",
   components: {
+    AccountSummary,
+    Insert,
+    CategorySeqChart
   },
   data() {
       return {
@@ -83,7 +66,12 @@ export default {
           { key: 'remark', label: '내용'},
           { key: 'impulse_yn', label: '충동지출'},
           { key: 'actions', label: '수정/삭제'},
-          { key: 'account_id', thClass: 'd-none', tdClass: 'd-none' }
+          { key: 'account_id', thClass: 'd-none', tdClass: 'd-none' },
+          { key: 'member_id', thClass: 'd-none', tdClass: 'd-none' },
+          { key: 'division_id', thClass: 'd-none', tdClass: 'd-none' },
+          { key: 'payment_id', thClass: 'd-none', tdClass: 'd-none' },
+          { key: 'category_id', thClass: 'd-none', tdClass: 'd-none' },
+          { key: 'category_seq', thClass: 'd-none', tdClass: 'd-none' },
         ],
         items: [],
         date: {
@@ -97,14 +85,12 @@ export default {
         monthList: [],
         jumboHeader: '',
         param: {},
-        divisionSum: {},
-        prevDivisionSum: {}
+        selectedForm: {}
        }
   },
   methods: {
     getMainList() {
       this.getAccountList()
-      this.getDivisionSum()
     },
     getAccountList() {
       this.strtDt = this.date.curYear + ('0' + this.date.curMonth).slice(-2) + '01'
@@ -123,7 +109,18 @@ export default {
     updateAccount(data) {
       console.log(data.item)
       // set parameter
-
+      this.selectedForm = {
+        'accountId': data.item.account_id,
+        'accountDt': data.item.account_dt.replace(/(\d{4})(\d{2})(\d{2})/g, '$1-$2-$3'),
+        'divisionId': data.item.division_id,
+        'memberId': data.item.member_id,
+        'paymentId': data.item.payment_id,
+        'categoryId': data.item.category_id,
+        'categorySeq': data.item.category_seq,
+        'price': data.item.price,
+        'remark': data.item.remark,
+        'impulseYn': data.item.impulse_yn
+      }
     },
     deleteAccount(data) {
       if(!confirm('데이터를 삭제하시겠습니까?')){
@@ -141,6 +138,9 @@ export default {
         if(res.data.result_message == "SUCCESS"){
           alert("삭제 완료!!")
           
+          // eventbus emit
+          EventBus.$emit('delete')
+
           // refresh account list
           this.getMainList()
         }
@@ -159,21 +159,6 @@ export default {
           }
         )
       }
-    },
-    getDivisionSum() {
-        // axios call
-      axios.get("http://146.56.159.174:8000/account_book" + "/division_sum?strtDt=" + this.date.curYear + ('0' + this.date.curDate.getMonth()).slice(-2) + '01' + "&endDt=" + this.date.curYear + ('0' + this.date.curDate.getMonth()).slice(-2) + new Date(this.date.curYear, this.date.curDate.getMonth(), 0).getDate())
-      .then((res)=>{
-        if(res.data.result_message == "SUCCESS"){
-          this.prevDivisionSum = res.data.result_data
-        }
-      })
-      axios.get("http://146.56.159.174:8000/account_book" + "/division_sum?strtDt=" + this.strtDt + "&endDt=" + this.endDt)
-      .then((res)=>{
-        if(res.data.result_message == "SUCCESS"){
-          this.divisionSum = res.data.result_data
-        }
-      })
     }
   },
   created() {
@@ -192,6 +177,7 @@ export default {
     // receive event bus from Insert.vue
     // refresh account list
     EventBus.$on('insert', this.getMainList)
+    EventBus.$on('delete', this.getMainList)
   }
 };
 </script>
