@@ -34,7 +34,6 @@
               <b-tr>
                 <b-th variant="secondary">투자율</b-th>
                 <b-td variant="secondary">{{divisionSum['invest_rate'] | comma}}</b-td>
-                <b-td>{{divisionSum['invest_rate'] - prevDivisionSum['invest_rate'] | comma}}</b-td>
               </b-tr>
             </b-tbody>
         </b-table-simple>
