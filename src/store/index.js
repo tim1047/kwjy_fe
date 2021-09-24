@@ -10,7 +10,8 @@ export default new Vuex.Store({
       curYear: new Date().getFullYear(),
       curMonth: new Date().getMonth() + 1,
       prevMonth: new Date().getMonth()
-    }
+    },
+    apiUrl: 'http://146.56.159.174:8000/account_book'
   },
   mutations: {
     setMonth: function(state, payload) {

@@ -47,8 +47,7 @@ export default {
           },
         responsive: true,
         maintainAspectRatio: false
-      },
-      serverSideUrl: 'http://146.56.159.174:8000/account_book'
+      }
     }
   },
   mounted() {
@@ -62,7 +61,7 @@ export default {
         // set chart data
         this.chartLabelData = []
         this.chartData = []
-        
+
         for(var key in res.data.result_data){
           this.chartLabelData.push(res.data.result_data[key]['category_nm'])
           this.chartData.push(((res.data.result_data[key]['sum_price'] / res.data.result_data[key]['total_sum_price']) * 100).toFixed(2))
@@ -91,6 +90,9 @@ export default {
     endDt() {
       return this.date.curYear + ('0' + this.date.curMonth).slice(-2) + new Date(this.date.curYear, this.date.curMonth, 0).getDate()
     },
+    serverSideUrl() {
+      return this.$store.state.apiUrl
+    }
   },
   watch: {
     date() {

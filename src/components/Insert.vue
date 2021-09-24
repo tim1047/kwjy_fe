@@ -123,7 +123,6 @@ import EventBus from '@/lib/EventBus.js'
         categorySeqItems: [],
         impulse: ['N', 'Y'],
         show: true,
-        serverSideUrl: 'http://146.56.159.174:8000/account_book',
         param: {}
       }
     },
@@ -322,6 +321,11 @@ import EventBus from '@/lib/EventBus.js'
       this.getDivisionList()
       // get account memeber list
       this.getMemberList()
+    },
+    computed: {
+      serverSideUrl() {
+        return this.$store.state.apiUrl
+      }
     }
   }
 </script>

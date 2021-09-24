@@ -62,8 +62,7 @@ export default {
   data() {
       return {
         expenseItems: [],
-        fixedPriceItems: [],
-        serverSideUrl: 'http://146.56.159.174:8000/account_book'
+        fixedPriceItems: []
       }
   },
   methods: {
@@ -109,6 +108,9 @@ export default {
     endDt() {
       return this.date.curYear + ('0' + this.date.curMonth).slice(-2) + new Date(this.date.curYear, this.date.curMonth, 0).getDate()
     },
+    serverSideUrl() {
+      return this.$store.state.apiUrl
+    }
   },
   watch: {
     date() {
