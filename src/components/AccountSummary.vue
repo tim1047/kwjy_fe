@@ -68,12 +68,8 @@ export default {
   name: "accountSummary",
   components: {
   },
-  props: ['searchDate'],
   data() {
       return {
-        date: this.searchDate,
-        strtDt: '',
-        endDt: '',
         divisionSum: {},
         prevDivisionSum: {},
         memberSum: []
@@ -85,11 +81,8 @@ export default {
       this.getMemberSum()
     },
     getDivisionSum() {
-      this.strtDt = this.date.curYear + ('0' + this.date.curMonth).slice(-2) + '01'
-      this.endDt = this.date.curYear + ('0' + this.date.curMonth).slice(-2) + new Date(this.date.curYear, this.date.curMonth, 0).getDate()
-
       // axios call
-      axios.get("http://146.56.159.174:8000/account_book" + "/division_sum?strtDt=" + this.date.curYear + ('0' + this.date.curDate.getMonth()).slice(-2) + '01' + "&endDt=" + this.date.curYear + ('0' + this.date.curDate.getMonth()).slice(-2) + new Date(this.date.curYear, this.date.curDate.getMonth(), 0).getDate())
+      axios.get("http://146.56.159.174:8000/account_book" + "/division_sum?strtDt=" + this.prevStrtDt + '01' + "&endDt=" + this.prevEndDt)
       .then((res)=>{
         if(res.data.result_message == "SUCCESS"){
           this.prevDivisionSum = res.data.result_data
@@ -119,6 +112,32 @@ export default {
     // refresh account list
     EventBus.$on('insert', this.getAccountSummary)
     EventBus.$on('delete', this.getAccountSummary)
+  },
+  computed: {
+    date() {
+      return {
+        curDate: this.$store.state.date.curDate,
+        curYear: this.$store.state.date.curYear,
+        curMonth: this.$store.state.date.curMonth
+      }
+    },
+    strtDt() {
+      return this.date.curYear + ('0' + this.date.curMonth).slice(-2) + '01'
+    },
+    endDt() {
+      return this.date.curYear + ('0' + this.date.curMonth).slice(-2) + new Date(this.date.curYear, this.date.curMonth, 0).getDate()
+    },
+    prevStrtDt() {
+      return this.date.curYear + ('0' + this.date.curDate.getMonth()).slice(-2) + '01'
+    },
+    prevEndDt() {
+      return this.date.curYear + ('0' + this.date.curDate.getMonth()).slice(-2) + new Date(this.date.curYear, this.date.curDate.getMonth(), 0).getDate()
+    }
+  },
+  watch: {
+    date() {
+      this.getAccountSummary()
+    }
   }
 };
 </script>

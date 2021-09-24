@@ -1,11 +1,11 @@
 <template>
   <div class="home">
     <b-jumbotron :header="jumboHeader" lead="원하는 월을 선택하여 조회해주세요.">
-      <b-form-select v-model="date.curMonth" :options="monthList"></b-form-select>
+      <b-form-select v-model="curMonth" :options="monthList"></b-form-select>
       <b-button variant="primary" @click="getMainList">조회</b-button>
     </b-jumbotron>
 
-    <AccountSummary v-bind:searchDate="date"></AccountSummary>
+    <AccountSummary></AccountSummary>
     <div style="width:40vw; float:left;">
       <CategorySeqChart></CategorySeqChart>
     </div>
@@ -74,27 +74,22 @@ export default {
           { key: 'category_seq', thClass: 'd-none', tdClass: 'd-none' },
         ],
         items: [],
-        date: {
-          curDate: null,
-          curYear: null,
-          curMonth: null,
-          prevMonth: null
-        },
+        curMonth: this.$store.state.date.curMonth,
         strtDt: '',
         endDt: '',
         monthList: [],
-        jumboHeader: '',
         param: {},
         selectedForm: {}
        }
   },
   methods: {
     getMainList() {
+      this.$store.commit('setMonth', this.curMonth)
       this.getAccountList()
     },
     getAccountList() {
-      this.strtDt = this.date.curYear + ('0' + this.date.curMonth).slice(-2) + '01'
-      this.endDt = this.date.curYear + ('0' + this.date.curMonth).slice(-2) + new Date(this.date.curYear, this.date.curMonth, 0).getDate()
+      this.strtDt = this.$store.state.date.curYear + ('0' + this.$store.state.date.curMonth).slice(-2) + '01'
+      this.endDt = this.$store.state.date.curYear + ('0' + this.$store.state.date.curMonth).slice(-2) + new Date(this.$store.state.date.curYear, this.$store.state.date.curMonth, 0).getDate()
 
       // axios call
       axios.get("http://146.56.159.174:8000/account_book" + "/account?strtDt=" + this.strtDt + "&endDt=" + this.endDt)
@@ -107,7 +102,6 @@ export default {
       })
     },
     updateAccount(data) {
-      console.log(data.item)
       // set parameter
       this.selectedForm = {
         'accountId': data.item.account_id,
@@ -162,12 +156,6 @@ export default {
     }
   },
   created() {
-    // set jumboHeader text
-    this.date.curDate = new Date()
-    this.date.curYear = this.date.curDate.getFullYear()
-    this.date.curMonth = this.date.curDate.getMonth() + 1
-    this.jumboHeader = this.date.curMonth + "월 가계부"
-
     // set month list
     this.setAccountDtList()
 
@@ -178,6 +166,11 @@ export default {
     // refresh account list
     EventBus.$on('insert', this.getMainList)
     EventBus.$on('delete', this.getMainList)
+  },
+  computed: {
+    jumboHeader() {
+      return this.$store.state.date.curMonth + "월 가계부"
+    }
   }
 };
 </script>

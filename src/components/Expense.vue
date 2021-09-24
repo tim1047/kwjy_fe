@@ -60,8 +60,11 @@ export default {
       }
   },
   methods: {
+    init() {
+      this.getExpense()
+    },
     getExpense() {
-      axios.get(this.serverSideUrl + "/category_sum/3")
+      axios.get(this.serverSideUrl + "/category_sum/3?strtDt=" + this.strtDt + '&endDt=' + this.endDt)
       .then((res)=>{
         // set account list
         this.expenseItems = res.data.result_data
@@ -72,7 +75,27 @@ export default {
     }
   },
   created() {
-    this.getExpense()
+    this.init()
+  },
+  computed: {
+    date() {
+      return {
+        curDate: this.$store.state.date.curDate,
+        curYear: this.$store.state.date.curYear,
+        curMonth: this.$store.state.date.curMonth
+      }
+    },
+    strtDt() {
+      return this.date.curYear + ('0' + this.date.curMonth).slice(-2) + '01'
+    },
+    endDt() {
+      return this.date.curYear + ('0' + this.date.curMonth).slice(-2) + new Date(this.date.curYear, this.date.curMonth, 0).getDate()
+    },
+  },
+  watch: {
+    date() {
+      this.init()
+    }
   }
 };
 </script>

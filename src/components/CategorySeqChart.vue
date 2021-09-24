@@ -15,7 +15,7 @@ export default {
         labels: this.chartLabelData,
         datasets: [
           {
-            label: '지출항목별 비중',
+            label: '지출항목별 비중 (단위: %)',
             backgroundColor: '#0ead38',
             pointBackgroundColor: 'white',
             borderWidth: 1,
@@ -57,7 +57,7 @@ export default {
   },
   methods: {
     getExpense() {
-      axios.get(this.serverSideUrl + "/category_sum/3")
+      axios.get(this.serverSideUrl + "/category_sum/3?strtDt=" + this.strtDt + '&endDt=' + this.endDt)
       .then((res)=>{
         // set chart data
         for(var key in res.data.result_data){
@@ -72,6 +72,26 @@ export default {
       .then((err)=>{
         console.log(err)
       })
+    }
+  },
+  computed: {
+    date() {
+      return {
+        curDate: this.$store.state.date.curDate,
+        curYear: this.$store.state.date.curYear,
+        curMonth: this.$store.state.date.curMonth
+      }
+    },
+    strtDt() {
+      return this.date.curYear + ('0' + this.date.curMonth).slice(-2) + '01'
+    },
+    endDt() {
+      return this.date.curYear + ('0' + this.date.curMonth).slice(-2) + new Date(this.date.curYear, this.date.curMonth, 0).getDate()
+    },
+  },
+  watch: {
+    date() {
+      this.getExpense()
     }
   }
 }
