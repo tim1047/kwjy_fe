@@ -1,7 +1,6 @@
 <template>
   <div>
     <AccountList />
-    <Insert />
   </div>
 </template>
 
@@ -9,13 +8,11 @@
 // @ is an alias to /src
 import axios from 'axios';
 import AccountList from "@/components/AccountList.vue";
-import Insert from "@/components/Insert.vue";
 
 export default {
   name: "Home",
   components: {
     AccountList,
-    Insert
   },
   data() {
       return {

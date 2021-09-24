@@ -1,5 +1,5 @@
 <template>
-  <div style="width:20vw; margin:4vw; float:left;">
+  <div>
     <b-form @submit="onSubmit" @reset="onReset" v-if="show">
       <b-form-group
         id="input-accountDt"
@@ -93,7 +93,8 @@
       </b-form-group>
 
       <div style="margin-top:10px;">
-        <b-button type="submit" variant="primary" style="margin-right:5px;">등록</b-button>
+        <b-button v-if="selectedForm" @click="updateAccount" variant="primary" style="margin-right:5px;">수정</b-button>
+        <b-button v-else type="submit" variant="primary" style="margin-right:5px;">등록</b-button>
         <b-button type="reset" variant="danger">초기화</b-button>
       </div>
     </b-form>
@@ -105,6 +106,7 @@ import axios from 'axios';
 import EventBus from '@/lib/EventBus.js'
 
   export default {
+    props: ['selectedForm'],
     data() {
       return {
         form: {
@@ -276,9 +278,46 @@ import EventBus from '@/lib/EventBus.js'
             this.clearFormData()
           }
         })
+      },
+      updateAccount() {
+        // parameter set
+        this.param = {
+          'account_dt': this.form.accountDt.replaceAll('-', ''),
+          'division_id': this.form.divisionId,
+          'member_id': this.form.memberId,
+          'payment_id': this.form.paymentId,
+          'category_id': this.form.categoryId,
+          'category_seq': this.form.categorySeq == null ? '' : this.form.categorySeq,
+          'price': this.form.price,
+          'remark': this.form.remark,
+          'impulse_yn': this.form.impulseYn,
+          'account_id': this.form.accountId
+        }
+        
+        // axios call
+        axios.put(this.serverSideUrl + "/account", this.param)
+        .then((res)=>{
+          if(res.data.result_message == "SUCCESS"){
+            alert('수정 완료!!')
+
+            // eventbus emit to AccountList.vue
+            EventBus.$emit('insert')
+
+            // form data reset
+            this.clearFormData()
+          }
+        })
       }
     },
     created() {
+      // 
+      if(this.selectedForm){
+        this.form = this.selectedForm
+        this.getPaymentList()
+        this.getCategoryList()
+        this.getCategorySeqList()
+      }
+
       // get division list
       this.getDivisionList()
       // get account memeber list
