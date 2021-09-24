@@ -81,13 +81,13 @@ export default {
     },
     getDivisionSum() {
       // axios call
-      axios.get("http://146.56.159.174:8000/account_book" + "/division_sum?strtDt=" + this.prevStrtDt + '01' + "&endDt=" + this.prevEndDt)
+      axios.get(this.serverSideUrl + "/division_sum?strtDt=" + this.prevStrtDt + "&endDt=" + this.prevEndDt)
       .then((res)=>{
         if(res.data.result_message == "SUCCESS"){
           this.prevDivisionSum = res.data.result_data
         }
       })
-      axios.get("http://146.56.159.174:8000/account_book" + "/division_sum?strtDt=" + this.strtDt + "&endDt=" + this.endDt)
+      axios.get(this.serverSideUrl + "/division_sum?strtDt=" + this.strtDt + "&endDt=" + this.endDt)
       .then((res)=>{
         if(res.data.result_message == "SUCCESS"){
           this.divisionSum = res.data.result_data
@@ -95,7 +95,7 @@ export default {
       })
     },
     getMemberSum() {
-      axios.get("http://146.56.159.174:8000/account_book" + "/member_sum?strtDt=" + this.strtDt + "&endDt=" + this.endDt)
+      axios.get(this.serverSideUrl + "/member_sum?strtDt=" + this.strtDt + "&endDt=" + this.endDt)
       .then((res)=>{
         if(res.data.result_message == "SUCCESS"){
           this.memberSum = res.data.result_data
@@ -117,7 +117,8 @@ export default {
       return {
         curDate: this.$store.state.date.curDate,
         curYear: this.$store.state.date.curYear,
-        curMonth: this.$store.state.date.curMonth
+        curMonth: this.$store.state.date.curMonth,
+        prevMonth: this.$store.state.date.prevMonth
       }
     },
     strtDt() {
@@ -127,10 +128,13 @@ export default {
       return this.date.curYear + ('0' + this.date.curMonth).slice(-2) + new Date(this.date.curYear, this.date.curMonth, 0).getDate()
     },
     prevStrtDt() {
-      return this.date.curYear + ('0' + this.date.curDate.getMonth()).slice(-2) + '01'
+      return this.date.curYear + ('0' + this.date.prevMonth).slice(-2) + '01'
     },
     prevEndDt() {
       return this.date.curYear + ('0' + this.date.curDate.getMonth()).slice(-2) + new Date(this.date.curYear, this.date.curDate.getMonth(), 0).getDate()
+    },
+    serverSideUrl() {
+      return this.$store.state.apiUrl
     }
   },
   watch: {

@@ -92,7 +92,7 @@ export default {
       this.endDt = this.$store.state.date.curYear + ('0' + this.$store.state.date.curMonth).slice(-2) + new Date(this.$store.state.date.curYear, this.$store.state.date.curMonth, 0).getDate()
 
       // axios call
-      axios.get("http://146.56.159.174:8000/account_book" + "/account?strtDt=" + this.strtDt + "&endDt=" + this.endDt)
+      axios.get(this.serverSideUrl + "/account?strtDt=" + this.strtDt + "&endDt=" + this.endDt)
       .then((res)=>{
         // set account list
         this.items = res.data.result_data
@@ -125,7 +125,7 @@ export default {
         'account_id': data.item.account_id
       }
       // axios call
-      axios.delete("http://146.56.159.174:8000/account_book" + "/account", {
+      axios.delete(this.serverSideUrl + "/account", {
         data: this.param
       })
       .then((res)=>{
@@ -170,6 +170,9 @@ export default {
   computed: {
     jumboHeader() {
       return this.$store.state.date.curMonth + "월 가계부"
+    },
+    serverSideUrl() {
+      return this.$store.state.apiUrl
     }
   }
 };
