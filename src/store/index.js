@@ -16,7 +16,11 @@ export default new Vuex.Store({
   mutations: {
     setMonth: function(state, payload) {
       state.date.curMonth = payload
-      state.date.prevMonth = payload - 1
+      if(payload == 1){
+        state.date.prevMonth = 12
+      } else{
+        state.date.prevMonth = payload - 1
+      }
     }
   },
   actions: {},
