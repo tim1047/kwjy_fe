@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="width:30vw; float:left; margin:2vw;">
+    <div style="width: 30vw; float:left; margin:2vw;">
         <b-table-simple bordered small caption-top responsive>
             <colgroup><col></colgroup>
             <colgroup><col></colgroup>
@@ -39,7 +39,7 @@
         </b-table-simple>
     </div>
 
-    <div style="width:15vw; float:left; margin:2vw;">
+    <div style="width: 15vw; float:left; margin:2vw;">
         <b-table-simple bordered small caption-top responsive>
             <colgroup><col></colgroup>
             <colgroup><col></colgroup>

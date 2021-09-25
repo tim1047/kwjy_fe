@@ -1,15 +1,5 @@
 <template>
   <div class="home">
-    <b-jumbotron :header="jumboHeader" lead="원하는 월을 선택하여 조회해주세요.">
-      <b-form-select v-model="curMonth" :options="monthList"></b-form-select>
-      <b-button variant="primary" @click="getMainList">조회</b-button>
-    </b-jumbotron>
-
-    <AccountSummary></AccountSummary>
-    <div style="width:40vw; float:left;">
-      <CategorySeqChart></CategorySeqChart>
-    </div>
-
     <div style="float:left;">
       <b-button v-b-modal="'insert-modal'" variant="primary" style="margin:0.5vw;">등록</b-button>
       <b-container fluid>
@@ -41,16 +31,12 @@
 // @ is an alias to /src
 import axios from 'axios';
 import EventBus from '@/lib/EventBus.js'
-import AccountSummary from "@/components/AccountSummary.vue";
 import Insert from "@/components/Insert.vue";
-import CategorySeqChart from "@/components/CategorySeqChart.vue";
 
 export default {
   name: "accountList",
   components: {
-    AccountSummary,
-    Insert,
-    CategorySeqChart
+    Insert
   },
   data() {
       return {
@@ -74,23 +60,15 @@ export default {
           { key: 'category_seq', thClass: 'd-none', tdClass: 'd-none' },
         ],
         items: [],
-        curMonth: this.$store.state.date.curMonth,
-        strtDt: '',
-        endDt: '',
-        monthList: [],
         param: {},
         selectedForm: {}
        }
   },
   methods: {
-    getMainList() {
-      this.$store.commit('setMonth', this.curMonth)
+    init() {
       this.getAccountList()
     },
     getAccountList() {
-      this.strtDt = this.$store.state.date.curYear + ('0' + this.$store.state.date.curMonth).slice(-2) + '01'
-      this.endDt = this.$store.state.date.curYear + ('0' + this.$store.state.date.curMonth).slice(-2) + new Date(this.$store.state.date.curYear, this.$store.state.date.curMonth, 0).getDate()
-
       // axios call
       axios.get(this.serverSideUrl + "/account?strtDt=" + this.strtDt + "&endDt=" + this.endDt)
       .then((res)=>{
@@ -134,45 +112,43 @@ export default {
           
           // eventbus emit
           EventBus.$emit('delete')
-
-          // refresh account list
-          this.getMainList()
         }
       })
       .then((err)=>{
         console.log(err)
       })
-    },
-    setAccountDtList() {
-      // set month list
-      for(let i=1;i<=12;i++){
-        this.monthList.push(
-          {
-            text: i+"월",
-            value: i 
-          }
-        )
-      }
     }
   },
   created() {
-    // set month list
-    this.setAccountDtList()
-
     // init account list
-    this.getMainList()
+    this.init()
 
     // receive event bus from Insert.vue
     // refresh account list
-    EventBus.$on('insert', this.getMainList)
-    EventBus.$on('delete', this.getMainList)
+    EventBus.$on('insert', this.init)
+    EventBus.$on('delete', this.init)
   },
   computed: {
-    jumboHeader() {
-      return this.$store.state.date.curMonth + "월 가계부"
+    date() {
+      return {
+        curDate: this.$store.state.date.curDate,
+        curYear: this.$store.state.date.curYear,
+        curMonth: this.$store.state.date.curMonth
+      }
+    },
+    strtDt() {
+      return this.date.curYear + ('0' + this.date.curMonth).slice(-2) + '01'
+    },
+    endDt() {
+      return this.date.curYear + ('0' + this.date.curMonth).slice(-2) + new Date(this.date.curYear, this.date.curMonth, 0).getDate()
     },
     serverSideUrl() {
       return this.$store.state.apiUrl
+    }
+  },
+  watch: {
+    date() {
+      this.init()
     }
   }
 };
