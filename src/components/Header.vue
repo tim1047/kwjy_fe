@@ -11,11 +11,13 @@
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
-
-    <b-jumbotron :header="jumboHeader" lead="원하는 월을 선택하여 조회해주세요.">
-      <b-form-select v-model="curMonth" :options="monthList"></b-form-select>
-      <b-button variant="primary" @click="goSearch()">조회</b-button>
-    </b-jumbotron>
+    
+    <div style="">
+      <b-jumbotron :header="jumboHeader" lead="원하는 월을 선택하여 조회해주세요.">
+        <b-form-select v-model="curMonth" :options="monthList"></b-form-select>
+        <b-button variant="primary" @click="goSearch()">조회</b-button>
+      </b-jumbotron>
+    </div>
   </div>
 </template>
 

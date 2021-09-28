@@ -5,8 +5,10 @@ import store from "./store";
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import DashboardPlugin from './plugins/dashboard-plugin';
 
 Vue.use(BootstrapVue)
+Vue.use(DashboardPlugin)
 
 Vue.config.productionTip = false;
 

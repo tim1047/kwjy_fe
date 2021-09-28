@@ -1,17 +1,17 @@
 <template>
-  <div class="home">
+  <div class="home">    
     <!-- AccoutSummary component -->
-    <div style="">
+    <div style="margin:1vw;">
       <AccountSummary></AccountSummary>
     </div>
 
     <!-- CategorySeqChart component -->
-    <div style="width:40vw; float:left;">
+    <div style="margin:1vw;">
       <CategorySeqChart></CategorySeqChart>
     </div>
 
     <!-- AccountList component -->
-    <div style="">
+    <div style="margin:1vw;">
       <AccountList></AccountList>
     </div>
   </div>

@@ -1,9 +1,9 @@
 <template>
   <div class="home">
-    <div style="float:left;">
+    <div style="">
       <b-button v-b-modal="'insert-modal'" variant="primary" style="margin:0.5vw;">등록</b-button>
       <b-container fluid>
-        <b-table responsive bordered fixed small :fields="fields" :items="items">
+        <b-table responsive bordered small :fields="fields" :items="items">
           <template #cell(actions)="data">
           <b-button size="sm" v-b-modal="'update-modal'" @click="updateAccount(data)" variant="primary" style="margin-right:5px;">
               수정
