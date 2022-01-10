@@ -114,7 +114,8 @@ import EventBus from '@/lib/EventBus.js'
           memberId: null,
           paymentId: null,
           categoryId: null,
-          remark: ''
+          remark: '',
+          impulseYn: 'N'
         },
         divisionItems: [],
         memberItems: [],
@@ -161,7 +162,7 @@ import EventBus from '@/lib/EventBus.js'
         this.form.categorySeq = null
         this.form.remark = ''
         this.form.price = ''
-        this.form.impulseYn = null
+        this.form.impulseYn = 'N'
       },
       getDivisionList() {
         // axios call
