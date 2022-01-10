@@ -14,6 +14,9 @@ export default new Vuex.Store({
     apiUrl: 'http://146.56.159.174:8000/account_book'
   },
   mutations: {
+    setYear: function(state, payload) {
+      state.date.curYear = payload
+    },
     setMonth: function(state, payload) {
       state.date.curMonth = payload
       if(payload == 1){

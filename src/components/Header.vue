@@ -13,7 +13,8 @@
     </b-navbar>
     
     <div style="">
-      <b-jumbotron :header="jumboHeader" lead="원하는 월을 선택하여 조회해주세요.">
+      <b-jumbotron :header="jumboHeader" lead="원하는 날짜를 선택하여 조회해주세요.">
+        <b-form-select v-model="curYear" :options="yearList"></b-form-select>
         <b-form-select v-model="curMonth" :options="monthList"></b-form-select>
         <b-button variant="primary" @click="goSearch()">조회</b-button>
       </b-jumbotron>
@@ -26,7 +27,9 @@ export default {
   name: "header",
   data() {
     return {
+      yearList: [],
       monthList: [],
+      curYear: this.$store.state.date.curYear,
       curMonth: this.$store.state.date.curMonth
     }
   },
@@ -43,8 +46,15 @@ export default {
             value: i 
           })
       }
+      for(let i=2021;i<=2023;i++){
+        this.yearList.push({
+            text: i+"년",
+            value: i 
+          })
+      }
     },
     goSearch() {
+      this.$store.commit('setYear', this.curYear)
       this.$store.commit('setMonth', this.curMonth)
     }
   },
