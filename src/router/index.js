@@ -61,4 +61,9 @@ const router = new VueRouter({
   routes,
 });
 
+router.afterEach((to, from) => {
+  Vue.nextTick(() => {
+    document.title = '강원_정윤_가계부';
+  });
+});
 export default router;
